@@ -1,3 +1,19 @@
+#Unsure what to make. Thinking back to what I did during edX: hangman?
+
+#How about a tic-tac-toe program? Text only, but with a computer opponent.
+#Perhaps could work on something that checks the possible outcomes for next turn and selects the best.
+#Could implement that first, then allow it to check multiple moves in advance? To truly choose the best move.
+
+
+#Need to categorise: available moves (remove squares already taken from the equation). (a-c, 1-3)
+#                    game-ending condition (win, three in a row. Or board full, draw). (every possible 3 in a row (including diagonals))
+#                    a way to make moves (taking user input). A user interface.
+
+#                    Maybe do that first, a game for 2 people. Can work on a computer opponent later.
+
+
+#How would I do this using Object-Oriented Programming? Uh-oh, can you remember how to OOP?
+
 class Tile(object):
     def __init__(self, other, other2):
         self.tile=other
@@ -17,6 +33,8 @@ class Tile(object):
         self.tile=""
     def name(self):
         """remembers what tile it is"""
+        #Why doesn't this work? This is where the BUG is. The reason is probably because you were using the SAME NAME for the method as for the object.
+        #So, self.tile was returning the value for tile inside of self, not using this method?
         return self.Tile
 
 #Board
@@ -45,9 +63,11 @@ class board(object):
     def playedMoves(self):
         """returns a list of all moves made. 
         Each item of the list is a tuple, first displaying the tile name, then the value of the tile ("X" or "O")"""
+        #Ooof, how do I make it return the tile name? I need to have a method in tile for that.
         List=[]
         for item in [a1, a2, a3, b1, b2, b3, c1, c2, c3]:
             if item.retrieve()!="":
+                #List += item     #This adds each letter separately...
                 List.append((item.name(), item.retrieve())) 
         return List
     def availableSquares(self):
@@ -67,9 +87,14 @@ class board(object):
 
 
     def returnAll(self):
-        return self.all
-
+        return self.all #This doesn't actually return the names of the objects, just their locations!
+        #Fixing the above broke something else in the code!
+        
+        #The reason is: now this method returns the names of the objects, not the objects themselves. Thus, you can't call methods on them (as they are strings, the names).
+        
     def return_names(self):
+        #Must remember to include (self) as first argument for a method (as it is inside an object).
+        
         ls=[]
         for item in self.all:
             ls.append(item.name())
@@ -81,7 +106,10 @@ board=board()
 #Player 1 is "O", Player 2 is "X".
 
 
+#Win condition checker. Is there another way to do this, less copy pasting? Ugh, forgot brackets for method call. Ugly but works.
 def winCondition():
+    #This is bugged. They are all the same normally, before they are bound.
+    #Thus, as soon as a move is played, it declares a winner.
     if a1.retrieve()!="":
         if a1.retrieve() == a2.retrieve() == a3.retrieve():
             if a1.retrieve() == "O":
@@ -90,7 +118,7 @@ def winCondition():
             if a1.retrieve() == "X":
                 print "Player 2 is the winner!"
                 return True
-    if b1.retrieve()!="":    
+    elif b1.retrieve()!="":    
         if b1.retrieve() == b2.retrieve() == b3.retrieve():
             if b1.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -98,7 +126,7 @@ def winCondition():
             if b1.retrieve() == "X":
                 print "Player 2 is the winner!"
                 return True
-    if c3.retrieve()!="":
+    elif c3.retrieve()!="":
         if c1.retrieve() == c2.retrieve() == c3.retrieve():
             if c1.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -106,7 +134,7 @@ def winCondition():
             if c1.retrieve() == "X":
                 print "Player 2 is the winner!"
                 return True
-    if a1.retrieve()!="":
+    elif a1.retrieve()!="":
         if a1.retrieve() == b1.retrieve() == c1.retrieve():
             if a1.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -114,7 +142,7 @@ def winCondition():
             if a1.retrieve() == "X":
                 print "Player 2 is the winner!"
                 return True
-    if a2.retrieve()!="":
+    elif a2.retrieve()!="":
         if a2.retrieve() == b2.retrieve() == c2.retrieve():
             if a2.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -122,7 +150,7 @@ def winCondition():
             if a2.retrieve() == "X":
                 print "Player 2 is the winner!"
                 return True
-    if c3.retrieve()!="":
+    elif c3.retrieve()!="":
         if a3.retrieve() == b3.retrieve() == c3.retrieve():
             if a3.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -132,7 +160,7 @@ def winCondition():
                 return True
             
     #diagonal victory
-    if b2.retrieve()!="":
+    elif b2.retrieve()!="":
         if a1.retrieve() == b2.retrieve() == c3.retrieve():
             if a1.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -141,7 +169,7 @@ def winCondition():
                 print "Player 2 is the winner!"
                 return True
                 
-    if b2.retrieve()!="":
+    elif b2.retrieve()!="":
         if a3.retrieve() == b2.retrieve() == c1.retrieve():
             if a3.retrieve() == "O":
                 print "Player 1 is the winner!"
@@ -153,6 +181,7 @@ def winCondition():
         return False
                             
 
+#A class for players? But what would I do with the players? Dunno.
 class player(object):
     def __init__(self, other):
         self.player=other
@@ -167,6 +196,7 @@ class player(object):
     def p1win(self):
         """checks all available moves to see if p1 can win with the next move. Changes the value, tests, then changes it back.
         It returns the name of the winning move. If no move will win the game, returns False."""
+        #Since fixing tile.reset(), this no longer works.
         for item in board.availableSquares2():
             item.set("O")
             if winCondition():
@@ -197,6 +227,14 @@ class comp(player):
 
 comp=comp(comp)
 
+
+#Progress report: implemented board and tiles. Also a function to check if win-condition has been met.
+#Player class created, not many ideas for it yet though.
+#To do next: implement a function that will control the flow of the game.
+
+#Actually, first, maybe implement a turn?
+#Turns could probably have been a class...
+
         
 def turn1():
     #First, display played moves.
@@ -211,6 +249,7 @@ def turn1():
     
     for item in board.returnAll():
         if item.name()==str(move):
+            #"str" object has no attribute "name". 
             item.set("O")
     if move not in board.return_names():
         print "Invalid move"
@@ -233,6 +272,7 @@ def turn2():
         return turn2()
         
 #tracks last turn, so it knows who to pass it to next
+#Doesn't work! Has to be inside the function.
 
 
 #Control flow for game.
@@ -244,13 +284,18 @@ def main():
             turn1()
         #Have to check win condition after every turn.
         if winCondition()==True:
-            return winCondition()
+#            winCondition()
+            break
         if lastTurn==1:
             lastTurn=2
             turn2()
         if winCondition()==True:
-            return winCondition()
+#           winCondition()
+            break
             
+#Now, how to do implement a computer opponent? This one is a bit more tricky.
+#Make it look into the future to make moves that block you?
+#Work with it looking one turn into the future, maybe can work from there?
 
 
 """Implement a "New Game" function, which resets everything? (Unbinds all set squares to default)."""
@@ -258,3 +303,25 @@ def main():
 def new_game():
     for tile in board.all:
         tile=tile.reset()
+        
+"""Also need to implement something that will filter moves that aren't valid according to the rules of the game. Done!"""
+
+
+#Now, how to do implement a computer opponent? This one is a bit more tricky.
+#Make it look into the future to make moves that block you?
+#Work with it looking one turn into the future, maybe can work from there?
+
+#At this point, it seems pretty hard to allow the players to select noughts or crosses, since it's hard-coded. How would you solve this?
+
+#Should be able to make something that will check if it is possible to win next turn. Checks all available moves. 
+#Then what? Try changing it, see if winCondition would trigger, and then change it back? Would that work?
+#Put this method in Player class, and make computer a sub-class of that?
+
+
+#We have the beginnings of something that will check to see whether a victory is possible next turn. However, it always
+#prints out a victory statement, and that needs to change. Will be difficult to alter.
+
+#Then, we need to provide the framework for the computer to start making use of this method.
+
+"""I also wonder whether it's possible to control the win condition print statements. Seems to print twice and also at inconventient times (like when it is testing whether a win is possible next turn).   
+    It also returns True, which means that message shows up in text box. Annoying. Hard to change at this point?"""
