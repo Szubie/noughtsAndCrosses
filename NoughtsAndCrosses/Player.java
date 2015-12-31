@@ -42,72 +42,38 @@ class AIPlayer extends Player{
 	public void takeTurn(){
 		printTurn();
 		int[] move = miniMax(this.board, this.thisPlayer, 4); //Depth 4 required to never lose.
-		System.out.print("Move =  ");
-		for(int num: move){
-			System.out.print(num+" ");
-		}
-		System.out.println();
-
-		System.out.println("Copied board:");
-		board.printBoard();
-
 		board.setBoard(move[1], move[2], this.thisPlayer);
 		board.printBoard();
 	}
 
-//TODO
 	public int[] miniMax(Board board, int player, int depth){
 		ArrayList<int[]> validMoves = findValidMoves(board);
-		for(int i=0; i<validMoves.size(); i++){
-			for(int num: validMoves.get(i)){
-				System.out.print(num+" ");
-			}
-			System.out.println();
-		}
-
-		//int bestScore;
-		int currentScore=0;
+		int currentScore;
 		int[] bestMove=new int[2];
 
 		int bestScore = (player == this.thisPlayer) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		
-		//if(player==this.thisPlayer){
-		//	bestScore=Integer.MIN_VALUE;
-		//}else{
-		//	bestScore=Integer.MAX_VALUE;
-		//}
-		System.out.println(bestScore);
-
 		if(validMoves.size()==0 || depth<=0){
 			bestScore=(evaluateBoard(board, player));
-			System.out.println("Assigning bestScore (FINAL).");
-			System.out.println(bestScore);
 		}
 		else{
 			for(int[] moves : validMoves){
 				board.setBoard(moves[0], moves[1], player);
-				board.printBoard();
 
 				if(player==thisPlayer){
 					currentScore=miniMax(board, opponentPlayer, depth-1)[0];
-					if(currentScore>=bestScore){
-						System.out.println("Assigning bestScore. (MAX)");
+					if(currentScore>bestScore){
 						bestScore=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
-						System.out.println("best score: "+bestScore);
-						System.out.println("best move "+bestMove[0]+" "+bestMove[1]);
 					}
 				}
 				else{
 					currentScore = miniMax(board, this.thisPlayer, depth-1)[0];
-					if(currentScore<=bestScore){
-						System.out.println("Assigning bestScore. (MIN)");
+					if(currentScore<bestScore){
 						bestScore=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
-						System.out.println("best score: "+bestScore);
-						System.out.println("best move: "+bestMove[0]+" "+bestMove[1]);
 					}
 				}
 				//Backtrack
@@ -125,7 +91,7 @@ class AIPlayer extends Player{
 			}
 		}
 	}
-//TODO: add in evaluations for number of tiles in a row.
+
 	/**
 	* Takes in a copied board and evaluates it. */
 	public int evaluateBoard(Board board, int player){
@@ -133,12 +99,10 @@ class AIPlayer extends Player{
 		if(player==this.thisPlayer){
 			if(board.victoryAchieved(opponentPlayer)==true){
 				evaluation=-100;
-				System.out.println("Opposing victory detected?");
 				return evaluation;
 			}
 			else if(board.victoryAchieved(player)==true){
 				evaluation=100;
-				System.out.println("Victory detected");
 				return evaluation;
 			}
 			else{
@@ -148,12 +112,10 @@ class AIPlayer extends Player{
 		else{
 			if(board.victoryAchieved(opponentPlayer)==true){
 				evaluation=-100;
-				System.out.println("Victory detected");
 				return evaluation;
 			}
 			else if(board.victoryAchieved(thisPlayer)==true){
 				evaluation=100;
-				System.out.println("Opposing victory detected?");
 				return evaluation;
 			}
 			else{

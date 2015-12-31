@@ -39,7 +39,6 @@ public class Board{
 
 	public boolean diagonalVictory(int player){
 		if(checkAscending(player)||checkDescending(player)){
-			System.out.println("diagonalVictory");
 			return true;
 		}
 		return false;
@@ -78,7 +77,6 @@ public class Board{
 				}
 			}
 			if(flag==true){
-				System.out.println("verticalVictory");
 				return flag;
 			}
 			else if(i<2){
@@ -93,7 +91,6 @@ public class Board{
 		for(int i=0; i<3; i++){
 			if(checkList(player, boardList[i])==true){
 				flag=true;
-				System.out.println("horizontalVictory");
 				return flag;
 			}
 		}
