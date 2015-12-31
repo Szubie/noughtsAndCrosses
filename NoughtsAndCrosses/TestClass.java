@@ -46,14 +46,15 @@ public class TestClass{
 		}
 		*/
 
-		Board board = new Board();
-		board.setBoard(0,0,0);
-		board.setBoard(0,1,0);
-		board.setBoard(1,0,0);
-		board.setBoard(2,0,1);
-		board.setBoard(1,1,1);
-		board.setBoard(1,2,1);
-		board.setBoard(2,1,0);
+		//Board board = new Board();
+		//board.setBoard(0,0,0);
+		//board.setBoard(0,1,0);
+		//board.setBoard(1,0,0);
+		//board.setBoard(2,0,1);
+		//board.setBoard(1,1,1);
+		//board.setBoard(1,2,1);
+		//board.setBoard(2,1,0);
+		
 		//board.printBoard();
 
 		//board.setBoard(0,2,0);
@@ -65,8 +66,8 @@ public class TestClass{
 		//board.setBoard(2,2,0);
 		//board.printBoard();
 
-		AIPlayer AI  = new AIPlayer(0, board);
-		//System.out.println(AI.evaluateBoard(AI.board));
+		//AIPlayer AI  = new AIPlayer(0, board);
+		//System.out.println(AI.evaluateBoard(AI.board, AI.thisPlayer));
 
 		//ArrayList<int[]> output = AI.findValidMoves(AI.board);
 		//for(int i=0; i<output.size(); i++){
@@ -74,9 +75,30 @@ public class TestClass{
 		//	System.out.println(output.get(i)[1]);
 		//}
 
-		int[] output2 =AI.miniMax(board, AI.thisPlayer);
-		for(int num:output2){
-			System.out.print(num+" ");
-		}
+		//int[] output2 =AI.miniMax(board, AI.thisPlayer, 2);
+		//for(int num:output2){
+		//	System.out.print(num+" ");
+		//}
+
+		//NoughtsAndCrosses game = new NoughtsAndCrosses();
+
+		/*
+		Board board = new Board();
+		board.setBoard(0,0,1);
+		board.setBoard(1,0,0);
+		board.setBoard(2,0,1);
+		board.setBoard(1,1,0);
+		board.setBoard(0,2,0);
+		board.printBoard();
+
+		//System.out.println(board.victoryAchieved(0));
+		AIPlayer AI  = new AIPlayer(1, board);
+		AI.miniMax(board, 0, 2);
+		board.printBoard();
+		//System.out.println(AI.evaluateBoard(AI.board, AI.thisPlayer));
+		*/
+		NoughtsAndCrosses game = new NoughtsAndCrosses();
+
+		
 	}
 }

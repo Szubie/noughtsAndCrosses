@@ -24,15 +24,13 @@ public abstract class Player{
 }
 
 class AIPlayer extends Player{
-	
-	Board copiedBoard = new Board();
 
 	int thisPlayer = this.playerNum;
 	int opponentPlayer = 1-thisPlayer;
 
 	public AIPlayer(int playerNum, Board board){
 		super(playerNum, board);
-		updateCopiedBoard();
+		updateboard();
 	}
 
 	@Override
@@ -43,96 +41,137 @@ class AIPlayer extends Player{
 	@Override
 	public void takeTurn(){
 		printTurn();
-		//validMoves=board.findValidMoves();
-		//board.setBoard(validMoves.get(0)[0], validMoves.get(0)[0], this.playerNum);
-		//board.printBoard();
+		int[] move = miniMax(this.board, this.thisPlayer, 4); //Depth 4 required to never lose.
+		System.out.print("Move =  ");
+		for(int num: move){
+			System.out.print(num+" ");
+		}
+		System.out.println();
+
+		System.out.println("Copied board:");
+		board.printBoard();
+
+		board.setBoard(move[1], move[2], this.thisPlayer);
+		board.printBoard();
 	}
 
-	public int[] miniMax(Board copiedBoard, int player){
-		ArrayList<int[]> validMoves = findValidMoves(copiedBoard);
-		int bestScore;
+//TODO
+	public int[] miniMax(Board board, int player, int depth){
+		ArrayList<int[]> validMoves = findValidMoves(board);
+		for(int i=0; i<validMoves.size(); i++){
+			for(int num: validMoves.get(i)){
+				System.out.print(num+" ");
+			}
+			System.out.println();
+		}
+
+		//int bestScore;
 		int currentScore=0;
 		int[] bestMove=new int[2];
 
-		//int bestScore = (player == this.thisPlayer) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		int bestScore = (player == this.thisPlayer) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		
-		if(player==this.thisPlayer){
-			bestScore=Integer.MIN_VALUE;
-		}else{
-			bestScore=Integer.MAX_VALUE;
-		}
+		//if(player==this.thisPlayer){
+		//	bestScore=Integer.MIN_VALUE;
+		//}else{
+		//	bestScore=Integer.MAX_VALUE;
+		//}
 		System.out.println(bestScore);
 
-		if(validMoves.size()==0){
-			bestScore=(evaluateBoard(copiedBoard));
+		if(validMoves.size()==0 || depth<=0){
+			bestScore=(evaluateBoard(board, player));
 			System.out.println("Assigning bestScore (FINAL).");
 			System.out.println(bestScore);
 		}
 		else{
 			for(int[] moves : validMoves){
-				copiedBoard.setBoard(moves[0], moves[1], player);
-				copiedBoard.printBoard();
+				board.setBoard(moves[0], moves[1], player);
+				board.printBoard();
 
 				if(player==thisPlayer){
-					currentScore=miniMax(copiedBoard, opponentPlayer)[0];
-					if(currentScore>bestScore){
+					currentScore=miniMax(board, opponentPlayer, depth-1)[0];
+					if(currentScore>=bestScore){
 						System.out.println("Assigning bestScore. (MAX)");
 						bestScore=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
-						System.out.println(bestScore);
-						System.out.println(bestMove[0]);
-						System.out.println(bestMove[1]);
+						System.out.println("best score: "+bestScore);
+						System.out.println("best move "+bestMove[0]+" "+bestMove[1]);
 					}
 				}
 				else{
-					currentScore = miniMax(copiedBoard, thisPlayer)[0];
-					if(currentScore<bestScore){
+					currentScore = miniMax(board, this.thisPlayer, depth-1)[0];
+					if(currentScore<=bestScore){
 						System.out.println("Assigning bestScore. (MIN)");
 						bestScore=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
+						System.out.println("best score: "+bestScore);
+						System.out.println("best move: "+bestMove[0]+" "+bestMove[1]);
 					}
 				}
 				//Backtrack
-				copiedBoard.setBoard(moves[0], moves[1], -1);
+				board.setBoard(moves[0], moves[1], -1);
 			}
 		}
 
 		return new int[] {bestScore, bestMove[0], bestMove[1]};
 	}
 
-	public void updateCopiedBoard(){
-		for(int i=0; i<copiedBoard.boardList.length; i++){
-			for(int j=0; j<copiedBoard.boardList.length; j++){				
-				copiedBoard.boardList[i][j]=board.boardList[i][j];
+	public void updateboard(){
+		for(int i=0; i<board.boardList.length; i++){
+			for(int j=0; j<board.boardList.length; j++){				
+				board.boardList[i][j]=board.boardList[i][j];
 			}
 		}
 	}
-
+//TODO: add in evaluations for number of tiles in a row.
 	/**
 	* Takes in a copied board and evaluates it. */
-	public int evaluateBoard(Board copiedBoard){
+	public int evaluateBoard(Board board, int player){
 		int evaluation = 0;
-		if(copiedBoard.victoryAchieved(thisPlayer)==true){
-			evaluation+=100;
-			return evaluation;
-		}
-		else if(copiedBoard.victoryAchieved(opponentPlayer)==true){
-			evaluation-=100;
-			return evaluation;
+		if(player==this.thisPlayer){
+			if(board.victoryAchieved(opponentPlayer)==true){
+				evaluation=-100;
+				System.out.println("Opposing victory detected?");
+				return evaluation;
+			}
+			else if(board.victoryAchieved(player)==true){
+				evaluation=100;
+				System.out.println("Victory detected");
+				return evaluation;
+			}
+			else{
+				return evaluation;
+			}
 		}
 		else{
-			return evaluation;
-		}
+			if(board.victoryAchieved(opponentPlayer)==true){
+				evaluation=-100;
+				System.out.println("Victory detected");
+				return evaluation;
+			}
+			else if(board.victoryAchieved(thisPlayer)==true){
+				evaluation=100;
+				System.out.println("Opposing victory detected?");
+				return evaluation;
+			}
+			else{
+				return evaluation;
+			}
+		}	
 	}
 
-	public ArrayList<int[]> findValidMoves(Board copiedBoard){
+	public ArrayList<int[]> findValidMoves(Board board){
 		ArrayList<int[]> validMoves = new ArrayList<int[]>();
+
+		if(board.victoryAchieved(0) || board.victoryAchieved(1)){
+			return validMoves;
+		}
 		
-		for(int i=0; i<copiedBoard.boardList.length; i++){
-			for(int j=0; j<copiedBoard.boardList.length; j++){
-				if(copiedBoard.boardList[i][j]==-1){
+		for(int i=0; i<board.boardList.length; i++){
+			for(int j=0; j<board.boardList.length; j++){
+				if(board.boardList[i][j]==-1){
 					int[] coordinates = new int[2];
 					coordinates[0] = j; //reversed
 					coordinates[1] = i;
