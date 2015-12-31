@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class NoughtsAndCrosses{
 	Scanner scanner = new Scanner(System.in);
@@ -74,6 +75,7 @@ public class NoughtsAndCrosses{
 	}
 
 	public void playGame(){
+		board.printBoard();
 		while(gameOver==false){
 			for(Player player: playerList){
 				player.takeTurn();
@@ -123,6 +125,7 @@ class Board{
 			}
 			System.out.println("\n");
 		}
+		System.out.println();
 	}
 
 	public void setBoard(int xAxis, int yAxis, int value){ //y axis first, but player input takes x axis first and reverses it.
@@ -217,109 +220,5 @@ class Board{
 			}
 		}
 		return flag;
-	}
-	
+	}	
 }
-
-abstract class Player{
-	public static final int firstPLayer=0;
-	public static final int secondPlayer=1;
-	public int playerNum;
-	public Board board;
-
-	public Player(int playerNum, Board board){
-		this.playerNum=playerNum;
-		this.board=board;
-	}
-
-	public String toString(){
-		return "Player "+Integer.toString(playerNum);
-	}
-
-	public abstract void takeTurn();
-}
-
-class AIPlayer extends Player{
-	public AIPlayer(int playerNum, Board board){
-		super(playerNum, board);
-	}
-
-	@Override
-	public String toString(){
-		return "AIPlayer "+Integer.toString(playerNum);
-	}
-
-	@Override
-	public void takeTurn(){
-		System.out.println("Not yet implemented.");
-	}
-}
-
-class HumanPlayer extends Player{
-	Scanner scanner = new Scanner(System.in);
-
-	public HumanPlayer(int playerNum, Board board){
-		super(playerNum, board);
-	}
-
-	@Override
-	public void takeTurn(){
-		board.printBoard();
-		printTurn();
-		int[] move = takePlayerInput();
-		while(testMove(move)==false){
-			System.out.println("Invalid move.");
-			move = takePlayerInput();
-		}
-		board.setBoard(move[0], move[1], playerNum);
-	}
-
-	public int[] takePlayerInput(){
-		int[] coordinateOutput=new int[2];
-
-		System.out.println("Input a move, using coordinate vlaues separated by a space.");
-		String input = scanner.nextLine();
-		String[] inputList = input.split(" ");
-		if(testInput(inputList)==false){
-			System.out.println("Invalid input");
-			return takePlayerInput();
-		}
-		else{
-			for(int i=0; i<2; i++){
-				coordinateOutput[i]=Integer.parseInt(inputList[i]);
-			}
-		}
-		return coordinateOutput;
-	}
-
-	public boolean testInput(String[] inputList){
-		if(inputList.length>2 || inputList.length<2){
-			return false;
-		}
-		for(int i=0; i<inputList.length; i++){
-			try{
-				Integer.parseInt(inputList[i]);
-			}
-			catch(Exception e){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean testMove(int[] move){
-		if(board.boardList[move[1]][move[0]]!=-1){
-			return false;
-		}
-		else{
-			return true;
-		}
-	}
-
-	public void printTurn(){
-		System.out.println("Player "+playerNum+"'s turn to play.");
-	}
-
-
-}
-
