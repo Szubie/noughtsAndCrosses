@@ -208,6 +208,4 @@ class HumanPlayer extends Player{
 			return true;
 		}
 	}
-
-
 }
