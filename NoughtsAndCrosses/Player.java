@@ -41,7 +41,7 @@ class AIPlayer extends Player{
 	@Override
 	public void takeTurn(){
 		printTurn();
-		int[] move = miniMax(this.board, this.thisPlayer, 4); //Depth 4 required to never lose.
+		int[] move = miniMax(this.board, this.thisPlayer, 9); //Higher depth required to never lose.
 		board.setBoard(move[1], move[2], this.thisPlayer);
 		board.printBoard();
 	}
@@ -170,7 +170,7 @@ class HumanPlayer extends Player{
 	public int[] takePlayerInput(){
 		int[] coordinateOutput=new int[2];
 
-		System.out.println("Input a move, using coordinate vlaues separated by a space.");
+		System.out.println("Input a move, using coordinate values separated by a space.");
 		String input = scanner.nextLine();
 		String[] inputList = input.split(" ");
 		if(testInput(inputList)==false){
