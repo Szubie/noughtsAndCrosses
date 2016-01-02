@@ -97,7 +97,8 @@ public class TestClass{
 		board.setBoard(move[1], move[2], 1);
 		board.printBoard(); */
 		//System.out.println(AI.evaluateBoard(AI.board, AI.thisPlayer));
-		
+
+
 		NoughtsAndCrosses game = new NoughtsAndCrosses();
 
 		

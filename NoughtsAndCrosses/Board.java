@@ -1,15 +1,17 @@
 
 public class Board{
-	int[][] boardList = new int[3][3];
+	public static final int boardSize=3;
+
+	int[][] boardList = new int[boardSize][boardSize];
 
 	public Board(){
-		buildBoard();
+		buildBoard(boardSize);
 	}
 
-	public void buildBoard(){
-		for(int i=0; i<3; i++){
-			int[] innerList = new int[3];
-			for(int j=0; j<3; j++){
+	public void buildBoard(int boardSize){
+		for(int i=0; i<boardSize; i++){
+			int[] innerList = new int[boardSize];
+			for(int j=0; j<boardSize; j++){
 				innerList[j]=-1;
 			}
 			this.boardList[i]=innerList;
@@ -17,8 +19,8 @@ public class Board{
 	}
 
 	public void printBoard(){
-		for(int i=0; i<3; i++){
-			for(int j=0; j<3; j++){
+		for(int i=0; i<boardSize; i++){
+			for(int j=0; j<boardSize; j++){
 				System.out.printf("%4s",this.boardList[i][j]+" ");
 			}
 			System.out.println("\n");
@@ -47,7 +49,7 @@ public class Board{
 	public boolean checkAscending(int player){
 		boolean flag=true;
 		int j=0;
-		for(int i=0; i<3; i++){
+		for(int i=0; i<boardSize; i++){
 			if(boardList[i][j]!=player){
 				flag=false;
 			}
@@ -59,7 +61,7 @@ public class Board{
 	public boolean checkDescending(int player){
 		boolean flag=true;
 		int j=0;
-		for(int i=2; i>=0; i--){
+		for(int i=boardSize-1; i>=0; i--){
 			if(boardList[i][j]!=player){
 				flag=false;
 			}
@@ -70,8 +72,8 @@ public class Board{
 
 	public boolean verticalVictory(int player){
 		boolean flag=true;
-		for(int i=0; i<3; i++){
-			for(int j=0; j<3; j++){
+		for(int i=0; i<boardSize; i++){
+			for(int j=0; j<boardSize; j++){
 				if(boardList[j][i]!=player){
 					flag=false;
 				}
@@ -79,7 +81,7 @@ public class Board{
 			if(flag==true){
 				return flag;
 			}
-			else if(i<2){
+			else if(i<boardSize-1){
 				flag=true;
 			}
 		}
@@ -88,7 +90,7 @@ public class Board{
 
 	public boolean horizontalVictory(int player){
 		boolean flag=false;
-		for(int i=0; i<3; i++){
+		for(int i=0; i<boardSize; i++){
 			if(checkList(player, boardList[i])==true){
 				flag=true;
 				return flag;
