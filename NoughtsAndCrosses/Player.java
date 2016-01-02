@@ -41,47 +41,56 @@ class AIPlayer extends Player{
 	@Override
 	public void takeTurn(){
 		printTurn();
-		int[] move = miniMax(this.board, this.thisPlayer, 9); //Higher depth required to never lose.
+		int[] move = miniMax(this.board, this.thisPlayer, 9, Integer.MIN_VALUE, Integer.MAX_VALUE); //Higher depth required to never lose.
 		board.setBoard(move[1], move[2], this.thisPlayer);
 		board.printBoard();
 	}
 
-	public int[] miniMax(Board board, int player, int depth){
+	public int[] miniMax(Board board, int player, int depth, int alpha, int beta){  //with alpha-beta pruning
 		ArrayList<int[]> validMoves = findValidMoves(board);
 		int currentScore;
 		int[] bestMove=new int[2];
-
-		int bestScore = (player == this.thisPlayer) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		
 		if(validMoves.size()==0 || depth<=0){
-			bestScore=(evaluateBoard(board, player));
+			currentScore=(evaluateBoard(board, player));
+			return new int[] {currentScore, bestMove[0], bestMove[1]};
 		}
 		else{
 			for(int[] moves : validMoves){
 				board.setBoard(moves[0], moves[1], player);
 
 				if(player==thisPlayer){
-					currentScore=miniMax(board, opponentPlayer, depth-1)[0];
-					if(currentScore>bestScore){
-						bestScore=currentScore;
+					currentScore=miniMax(board, opponentPlayer, depth-1, alpha, beta)[0];
+					if(currentScore> alpha){
+						alpha=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
+						if(alpha>=beta){
+							board.setBoard(moves[0], moves[1], -1); //reset the prospective move when pruning
+							break;
+						}
 					}
 				}
 				else{
-					currentScore = miniMax(board, this.thisPlayer, depth-1)[0];
-					if(currentScore<bestScore){
-						bestScore=currentScore;
+					currentScore = miniMax(board, this.thisPlayer, depth-1, alpha, beta)[0];
+					if(currentScore<beta){
+						beta=currentScore;
 						bestMove[0]=moves[0];
 						bestMove[1]=moves[1];
+						if(beta<=alpha){
+							board.setBoard(moves[0], moves[1], -1); //reset the prospective move when pruning
+							break;
+						}
 					}
 				}
 				//Backtrack
 				board.setBoard(moves[0], moves[1], -1);
+				//Cut branches
+
 			}
+			return new int[] {(player == thisPlayer) ? alpha : beta, bestMove[0], bestMove[1]};
 		}
 
-		return new int[] {bestScore, bestMove[0], bestMove[1]};
 	}
 
 	public void updateboard(){

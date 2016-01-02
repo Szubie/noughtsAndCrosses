@@ -90,13 +90,14 @@ public class TestClass{
 		board.setBoard(1,1,0);
 		board.setBoard(0,2,0);
 		board.printBoard();
-
+		
 		//System.out.println(board.victoryAchieved(0));
 		AIPlayer AI  = new AIPlayer(1, board);
-		AI.miniMax(board, 0, 2);
-		board.printBoard();
+		int[] move= AI.miniMax(board, 1, 2, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		board.setBoard(move[1], move[2], 1);
+		board.printBoard(); */
 		//System.out.println(AI.evaluateBoard(AI.board, AI.thisPlayer));
-		*/
+		
 		NoughtsAndCrosses game = new NoughtsAndCrosses();
 
 		
